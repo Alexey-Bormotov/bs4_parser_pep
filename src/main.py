@@ -9,7 +9,6 @@ from urllib.parse import urljoin
 from configs import configure_argument_parser, configure_logging
 from outputs import control_output
 from utils import get_response, find_tag
-
 from constants import BASE_DIR, MAIN_DOC_URL, MAIN_PEP_URL, EXPECTED_STATUS
 
 
@@ -138,8 +137,6 @@ def pep(session):
     tr_tags = section_tag.find_all('tr')
 
     for tr_tag in tqdm(tr_tags[1:], desc='Подсчет статусов PEP'):
-        pep_list_status = EXPECTED_STATUS[tr_tag.td.text[1:]]
-
         pep_link = tr_tag.td.find_next_sibling().find('a')['href']
         pep_url = urljoin(MAIN_PEP_URL, pep_link)
 
@@ -155,14 +152,17 @@ def pep(session):
         )
         pep_status = dt_tag.find_next_sibling().text
 
+        counter[pep_status] = counter.get(pep_status, 0) + 1
+
         try:
-            counter[pep_status] += 1
+            pep_list_status = EXPECTED_STATUS[tr_tag.td.text[1:]]
         except KeyError:
-            logging.info(f'Неизвестный статус: '
-                         f'"{pep_status}" у PEP "{pep_url}". '
-                         f'Ожидаемые статусы: {pep_list_status}.'
+            logging.info(f'Неизвестный статус у PEP: '
+                         f'"{pep_url}".'
+                         f'Статус в карточке: {pep_status}, '
+                         f'код статуса в списке PEP: {tr_tag.td.text[1:]}.'
                          )
-            continue
+            pep_list_status = [pep_status, ]
 
         if pep_status not in pep_list_status:
             logging.info(f'Несовпадающие статусы у PEP: '
