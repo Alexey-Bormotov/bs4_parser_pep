@@ -18,8 +18,8 @@
 
 Перед запуском необходимо склонировать проект:
 ```bash
-HTTPS: git clone https://github.com/DIABLik666/foodgram-project-react.git
-SSH: git clone git@github.com:DIABLik666/foodgram-project-react.git
+HTTPS: git clone https://github.com/DIABLik666/bs4_parser_pep.git
+SSH: git clone git@github.com:DIABLik666/bs4_parser_pep.git
 ```
 
 Развернуть виртуальное окружение:
